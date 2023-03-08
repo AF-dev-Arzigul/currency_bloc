@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:dars_currency/core/hive/api_hive.dart';
 import 'package:dio/dio.dart';
 
 class ApiBase {

@@ -1,6 +1,7 @@
 import 'package:dars_currency/di.dart';
 import 'package:dars_currency/pages/main/bloc/main_bloc.dart';
 import 'package:dars_currency/pages/main/main_page.dart';
+import 'package:dars_currency/test_page.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,7 +31,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(),
+      theme: ThemeData(
+        primarySwatch: Colors.green
+      ),
+      debugShowCheckedModeBanner: false,
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
