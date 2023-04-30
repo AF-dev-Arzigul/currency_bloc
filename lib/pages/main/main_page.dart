@@ -1,15 +1,22 @@
+import 'package:dars_currency/pages/main/widget/calculate_dialog.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'bloc/main_bloc.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
   @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  @override
   Widget build(BuildContext context) {
     final bloc = context.read<MainBloc>();
-    String _chooseLang = context.locale.toString();
+    String _chooseLang = localLanguage(context);
 
     return BlocBuilder<MainBloc, MainState>(
       builder: (context, state) {
@@ -45,7 +52,7 @@ class MainPage extends StatelessWidget {
                     // isScrollControlled: true,
                     context: context,
                     builder: (context) {
-                      print("bottom sheet: ${_chooseLang}");
+                      // print("bottom sheet: ${_chooseLang}");
                       return Container(
                         padding: EdgeInsets.all(20),
                         height: 350,
@@ -119,13 +126,13 @@ class MainPage extends StatelessWidget {
               return ListView.builder(
                 // scrollDirection: Axis.vertical,
                 // shrinkWrap: true,
-                // physics: const ScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemCount: state.currencies.length,
                 itemBuilder: (_, i) {
                   final theme = Theme.of(context).copyWith(dividerColor: Colors.transparent);
                   final model = state.currencies[i].tr(context.locale);
                   return Container(
-                    padding: EdgeInsets.only(top: 5, bottom: 5, right: 10, left: 10),
+                    padding: const EdgeInsets.only(top: 5, bottom: 5, right: 10, left: 10),
                     child: Card(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       elevation: 5,
@@ -133,7 +140,7 @@ class MainPage extends StatelessWidget {
                         data: theme,
                         child: ExpansionTile(
                           title: Container(
-                            padding: EdgeInsets.only(top: 10, bottom: 10),
+                            padding: const EdgeInsets.only(top: 10, bottom: 10),
                             child: Column(
                               children: [
                                 Row(
@@ -142,7 +149,7 @@ class MainPage extends StatelessWidget {
                                         textAlign: TextAlign.start,
                                         text: TextSpan(
                                             text: "${model.ccyNm}\t\t",
-                                            style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 17),
+                                            style: const TextStyle(fontWeight: FontWeight.w500, color: Colors.black, fontSize: 17),
                                             children: [
                                               TextSpan(
                                                   text: model.diff.startsWith("-") ? model.diff : " +${model.diff}",
@@ -154,9 +161,9 @@ class MainPage extends StatelessWidget {
                                 const SizedBox(height: 5),
                                 Row(
                                   children: [
-                                    Text("1 ${model.ccy} => ${model.rate} UZS | ", style: TextStyle(fontSize: 14)),
+                                    Text("1 ${model.ccy} => ${model.rate} UZS | ", style: const TextStyle(fontSize: 14)),
                                     Image.asset("assets/images/calendar_icon.png", width: 15, height: 15),
-                                    Text(" ${model.date}", style: TextStyle(fontSize: 14))
+                                    Text(" ${model.date}", style: const TextStyle(fontSize: 14))
                                   ],
                                 ),
                               ],
@@ -165,18 +172,23 @@ class MainPage extends StatelessWidget {
                           children: [
                             Container(
                                 alignment: Alignment.centerRight,
-                                padding: EdgeInsets.only(bottom: 10, right: 15),
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-                                    onPressed: () {},
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(Icons.calculate_rounded, size: 16),
-                                        SizedBox(width: 8),
-                                        Text("Hisoblash", style: TextStyle(fontSize: 12))
-                                      ],
-                                    )))
+                                padding: const EdgeInsets.only(bottom: 10, right: 15),
+                                child: GestureDetector(
+                                  onTap: () {},
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+                                      onPressed: () {
+                                        CalculateDialog.showCalculateDialog(context, model: model);
+                                      },
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: const [
+                                          Icon(Icons.calculate_rounded, size: 16),
+                                          SizedBox(width: 8),
+                                          Text("Hisoblash", style: TextStyle(fontSize: 12))
+                                        ],
+                                      )),
+                                ))
                           ],
                         ),
                       ),
@@ -189,5 +201,25 @@ class MainPage extends StatelessWidget {
         );
       },
     );
+  }
+
+  String localLanguage(BuildContext context) {
+    String _lang = context.locale.toString();
+    String langText = "";
+    switch (_lang) {
+      case 'uz_UZ':
+        langText = "O'zbekcha";
+        break;
+      case 'uz_UZC':
+        langText = "Крилча";
+        break;
+      case 'ru_RU':
+        langText = "Русский";
+        break;
+      case 'en_EN':
+        langText = "English";
+        break;
+    }
+    return langText;
   }
 }
